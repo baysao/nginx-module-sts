@@ -453,7 +453,8 @@ ngx_http_stream_server_traffic_status_init_main_conf(ngx_conf_t *cf, void *conf)
 {
     ngx_http_stream_server_traffic_status_ctx_t  *ctx = conf;
 
-    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cf->log, 0,
+    //    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cf->log, 0,
+    ngx_log_error(NGX_LOG_INFO, cf->log, 0,
                    "http stream sts init main conf");
 
     ngx_conf_init_value(ctx->enable, 0);
@@ -515,7 +516,8 @@ ngx_http_stream_server_traffic_status_merge_loc_conf(ngx_conf_t *cf, void *paren
 
     ngx_http_stream_server_traffic_status_ctx_t  *ctx;
 
-    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cf->log, 0,
+    //    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cf->log, 0,
+    ngx_log_error(NGX_LOG_INFO, cf->log, 0,
                    "http stream sts merge loc conf");
 
     ctx = ngx_http_conf_get_module_main_conf(cf, ngx_http_stream_server_traffic_status_module);

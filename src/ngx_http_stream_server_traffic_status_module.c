@@ -8,6 +8,7 @@
 
 #include "ngx_http_stream_server_traffic_status_module.h"
 #include "ngx_http_stream_server_traffic_status_display.h"
+#include "ngx_http_stream_server_traffic_status_dump.h"
 
 
 static char *ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf,

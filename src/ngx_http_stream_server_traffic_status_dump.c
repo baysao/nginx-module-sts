@@ -243,7 +243,8 @@ ngx_http_stream_server_traffic_status_dump_handler(ngx_event_t *ev)
 
     rc = ngx_http_stream_server_traffic_status_dump_execute(ev);
     if (rc != NGX_OK) {
-        ngx_log_error(NGX_LOG_ALERT, ev->log, 0,
+      //        ngx_log_error(NGX_LOG_ALERT, ev->log, 0,
+        ngx_log_error(NGX_LOG_INFO, ev->log, 0,
                       "dump_handler::dump_header_execute() failed");
     }
 

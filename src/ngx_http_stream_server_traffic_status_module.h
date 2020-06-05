@@ -38,7 +38,7 @@
 #define NGX_HTTP_STREAM_SERVER_TRAFFIC_STATUS_AVERAGE_METHOD_WMA 1
 
 #define NGX_HTTP_STREAM_SERVER_TRAFFIC_STATUS_DEFAULT_SHM_NAME                 \
-  "stream_server_traffic_status"
+  "ngx_http_stream_server_traffic_status"
 #define NGX_HTTP_STREAM_SERVER_TRAFFIC_STATUS_DEFAULT_SHM_SIZE 0xfffff
 #define NGX_HTTP_STREAM_SERVER_TRAFFIC_STATUS_DEFAULT_JSONP                    \
   "ngx_http_stream_server_traffic_status_jsonp_callback"

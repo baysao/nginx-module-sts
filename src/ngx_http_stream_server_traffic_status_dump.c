@@ -230,8 +230,6 @@ ngx_http_stream_server_traffic_status_dump_execute(ngx_event_t *ev)
 void
 ngx_http_stream_server_traffic_status_dump_handler(ngx_event_t *ev)
 {
-  ngx_log_error(NGX_LOG_EMERG, ev->log, 0,
-		"dump_handler");
     ngx_int_t  rc;
 
     if (ngx_exiting) {

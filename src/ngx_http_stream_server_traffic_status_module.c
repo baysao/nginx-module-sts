@@ -423,6 +423,7 @@ static void ngx_http_stream_server_traffic_status_exit_worker(ngx_cycle_t *cycle
     return;
   }
 
+  
   /* dump */
   dump_event = &ctx->dump_event;
   dump_event->log = ngx_cycle->log;

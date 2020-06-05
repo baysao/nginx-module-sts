@@ -365,20 +365,22 @@ static ngx_int_t ngx_http_stream_server_traffic_status_init_worker(ngx_cycle_t *
   ngx_event_t *dump_event;
   ngx_http_stream_server_traffic_status_ctx_t *ctx;
   ngx_log_error(NGX_LOG_INFO, cycle->log, 0, "http sts init1 worker");
-  ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0, "http sts init2 worker");
+  //  ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0, "http sts init2 worker");
 
   ctx = ngx_http_cycle_get_module_main_conf(
       cycle, ngx_http_stream_server_traffic_status_module);
 
   if (ctx == NULL) {
-    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0,
+    //    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0,
+    ngx_log_err(NGX_LOG_INFO, cycle->log, 0,
                    "sts::init_worker(): is bypassed due to no http block in "
                    "configure file");
     return NGX_OK;
   }
 
   if (!(ctx->enable & ctx->dump) || ctx->rbtree == NULL) {
-    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0,
+    //ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0,
+    ngx_log_err(NGX_LOG_INFO, cycle->log, 0,
                    "sts::init_worker(): is bypassed");
     return NGX_OK;
   }
@@ -401,20 +403,22 @@ static void ngx_http_stream_server_traffic_status_exit_worker(ngx_cycle_t *cycle
   ngx_http_stream_server_traffic_status_ctx_t *ctx;
 
   ngx_log_error(NGX_LOG_INFO, cycle->log, 0, "http sts exit1 worker");
-  ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0, "http sts exit2 worker");
+  //  ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0, "http sts exit2 worker");
 
   ctx = ngx_http_cycle_get_module_main_conf(
       cycle, ngx_http_stream_server_traffic_status_module);
 
   if (ctx == NULL) {
-    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0,
+    //    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0,
+		   ngx_log_err(NGX_LOG_INFO, cycle->log, 0,
                    "sts::exit_worker(): is bypassed due to no http block in "
                    "configure file");
     return;
   }
 
   if (!(ctx->enable & ctx->dump) || ctx->rbtree == NULL) {
-    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0,
+    //    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0,
+		   ngx_log_err(NGX_LOG_INFO, cycle->log, 0,
                    "sts::exit_worker(): is bypassed");
     return;
   }

@@ -385,6 +385,8 @@ ngx_http_stream_server_traffic_status_dump_restore(ngx_event_t *ev)
         if (n == NGX_ERROR || n == 0
             || n != sizeof(ngx_http_stream_server_traffic_status_node_t)) {
 	  //ngx_log_debug1(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+	  ngx_log_error(NGX_LOG_INFO, ev->log, 0,
+			"dump_restore::ngx_read_file() node file:%s", file.name);
             ngx_log_error(NGX_LOG_INFO, ev->log, 0,
                           "dump_restore::ngx_read_file() node size:%z failed", n);
             break;

@@ -117,12 +117,12 @@ ngx_module_t ngx_http_stream_server_traffic_status_module = {
     NGX_HTTP_MODULE,                                         /* module type */
     NULL,                                                    /* init master */
     NULL,                                                    /* init module */
-        NULL,                                                    /* init process */
-    //ngx_http_stream_server_traffic_status_init_worker, /* init process */
+    //  NULL,                                                    /* init process */
+    ngx_http_stream_server_traffic_status_init_worker, /* init process */
     NULL,                                                    /* init thread */
     NULL,                                                    /* exit thread */
-        NULL,                                                    /* exit process */
-	//ngx_http_stream_server_traffic_status_exit_worker, /* exit process */
+    //        NULL,                                                    /* exit process */
+	ngx_http_stream_server_traffic_status_exit_worker, /* exit process */
     NULL,                                                    /* exit master */
     NGX_MODULE_V1_PADDING
 };

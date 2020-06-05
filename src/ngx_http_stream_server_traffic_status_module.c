@@ -10,6 +10,13 @@
 #include "ngx_http_stream_server_traffic_status_display.h"
 #include "ngx_http_stream_server_traffic_status_dump.h"
 
+static void
+ngx_http_stream_server_traffic_status_rbtree_insert_value(ngx_rbtree_node_t *temp,
+                                                  ngx_rbtree_node_t *node,
+                                                  ngx_rbtree_node_t *sentinel);
+static ngx_int_t
+ngx_http_stream_server_traffic_status_init_zone(ngx_shm_zone_t *shm_zone, void *data);
+
 static char *ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf,
     ngx_command_t *cmd, void *conf);
 static char *ngx_http_stream_server_traffic_status_dump(ngx_conf_t *cf,
@@ -158,9 +165,198 @@ invalid:
   return NGX_CONF_ERROR;
 }
 
+static void
+ngx_http_stream_server_traffic_status_rbtree_insert_value(ngx_rbtree_node_t *temp,
+                                                  ngx_rbtree_node_t *node,
+                                                  ngx_rbtree_node_t *sentinel) {
+  ngx_rbtree_node_t **p;
+  ngx_http_stream_server_traffic_status_node_t *vtsn, *vtsnt;
+
+  for (;;) {
+
+    if (node->key < temp->key) {
+
+      p = &temp->left;
+
+    } else if (node->key > temp->key) {
+
+      p = &temp->right;
+
+    } else { /* node->key == temp->key */
+
+      vtsn = (ngx_http_stream_server_traffic_status_node_t *)&node->color;
+      vtsnt = (ngx_http_stream_server_traffic_status_node_t *)&temp->color;
+
+      p = (ngx_memn2cmp(vtsn->data, vtsnt->data, vtsn->len, vtsnt->len) < 0)
+              ? &temp->left
+              : &temp->right;
+    }
+
+    if (*p == sentinel) {
+      break;
+    }
+
+    temp = *p;
+  }
+
+  *p = node;
+  node->parent = temp;
+  node->left = sentinel;
+  node->right = sentinel;
+  ngx_rbt_red(node);
+}
+
+
+static ngx_int_t
+ngx_http_stream_server_traffic_status_init_zone(ngx_shm_zone_t *shm_zone, void *data) {
+  ngx_http_stream_server_traffic_status_ctx_t *octx = data;
+
+  size_t len;
+  ngx_slab_pool_t *shpool;
+  ngx_rbtree_node_t *sentinel;
+  ngx_http_stream_server_traffic_status_ctx_t *ctx;
+
+  ctx = shm_zone->data;
+
+  if (octx) {
+    ctx->rbtree = octx->rbtree;
+    return NGX_OK;
+  }
+
+  shpool = (ngx_slab_pool_t *)shm_zone->shm.addr;
+
+  if (shm_zone->shm.exists) {
+    ctx->rbtree = shpool->data;
+    return NGX_OK;
+  }
+
+  ctx->rbtree = ngx_slab_alloc(shpool, sizeof(ngx_rbtree_t));
+  if (ctx->rbtree == NULL) {
+    return NGX_ERROR;
+  }
+
+  shpool->data = ctx->rbtree;
+
+  sentinel = ngx_slab_alloc(shpool, sizeof(ngx_rbtree_node_t));
+  if (sentinel == NULL) {
+    return NGX_ERROR;
+  }
+
+  ngx_rbtree_init(ctx->rbtree, sentinel,
+                  ngx_http_stream_server_traffic_status_rbtree_insert_value);
+
+  len = sizeof(" in stream_server_traffic_status_zone \"\"") + shm_zone->shm.name.len;
+
+  shpool->log_ctx = ngx_slab_alloc(shpool, len);
+  if (shpool->log_ctx == NULL) {
+    return NGX_ERROR;
+  }
+
+  ngx_sprintf(shpool->log_ctx, " in stream_server_traffic_status_zone \"%V\"%Z",
+              &shm_zone->shm.name);
+
+  return NGX_OK;
+}
+
+
+static char *ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf,
+                                                ngx_command_t *cmd,
+                                                void *conf) {
+
+
+  ngx_str_t *value, name;
+  ngx_http_stream_server_traffic_status_ctx_t *ctx;
+  ngx_uint_t i;
+  
+
+
+
+  value = cf->args->elts;
+
+  ctx = ngx_http_conf_get_module_main_conf(
+      cf, ngx_http_stream_server_traffic_status_module);
+  if (ctx == NULL) {
+    return NGX_CONF_ERROR;
+  }
+
+  ctx->enable = 1;
+
+  ngx_str_set(&name, NGX_HTTP_STREAM_SERVER_TRAFFIC_STATUS_DEFAULT_SHM_NAME);
+
+  ssize_t size;
+  u_char *p;    
+  ngx_shm_zone_t *shm_zone;
+  ngx_str_t s;
+  
+  size = NGX_HTTP_STREAM_SERVER_TRAFFIC_STATUS_DEFAULT_SHM_SIZE;
+
+  for (i = 1; i < cf->args->nelts; i++) {
+    if (ngx_strncmp(value[i].data, "shared:", 7) == 0) {
+
+      name.data = value[i].data + 7;
+
+      p = (u_char *)ngx_strchr(name.data, ':');
+      if (p == NULL) {
+        ngx_conf_log_error(NGX_LOG_EMERG, cf, 0, "invalid shared size \"%V\"",
+                           &value[i]);
+        return NGX_CONF_ERROR;
+      }
+
+      name.len = p - name.data;
+
+      s.data = p + 1;
+      s.len = value[i].data + value[i].len - s.data;
+
+      size = ngx_parse_size(&s);
+      if (size == NGX_ERROR) {
+        ngx_conf_log_error(NGX_LOG_EMERG, cf, 0, "invalid shared size \"%V\"",
+                           &value[i]);
+        return NGX_CONF_ERROR;
+      }
+
+      if (size < (ssize_t)(8 * ngx_pagesize)) {
+        ngx_conf_log_error(NGX_LOG_EMERG, cf, 0, "shared \"%V\" is too small",
+                           &value[i]);
+        return NGX_CONF_ERROR;
+      }
+
+      continue;
+    }
+
+    ngx_conf_log_error(NGX_LOG_EMERG, cf, 0, "invalid parameter \"%V\"",
+                       &value[i]);
+    return NGX_CONF_ERROR;
+  }
+
+  shm_zone = ngx_shared_memory_add(cf, &name, size,
+                                   &ngx_http_stream_server_traffic_status_module);
+  if (shm_zone == NULL) {
+    return NGX_CONF_ERROR;
+  }
+
+  if (shm_zone->data) {
+    ctx = shm_zone->data;
+
+    ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+                       "stream_server_traffic_status: \"%V\" is already bound to key",
+                       &name);
+
+    return NGX_CONF_ERROR;
+  }
+
+  ctx->shm_zone = shm_zone;
+  ctx->shm_name = name;
+  ctx->shm_size = size;
+  shm_zone->init = ngx_http_stream_server_traffic_status_init_zone;
+  shm_zone->data = ctx;
+
+  return NGX_CONF_OK;
+}
+
+
 
 static char *
-ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+ngx_http_stream_server_traffic_status_zone1(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 {
     ngx_str_t                                    *value, name;
     ngx_uint_t                                    i;

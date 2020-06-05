@@ -245,6 +245,8 @@ ngx_http_stream_server_traffic_status_create_main_conf(ngx_conf_t *cf)
     }
 
     ctx->enable = NGX_CONF_UNSET;
+    ctx->dump = NGX_CONF_UNSET;
+    ctx->dump_period = NGX_CONF_UNSET_MSEC;
 
     return ctx;
 }
@@ -259,7 +261,10 @@ ngx_http_stream_server_traffic_status_init_main_conf(ngx_conf_t *cf, void *conf)
                    "http stream sts init main conf");
 
     ngx_conf_init_value(ctx->enable, 0);
-
+  ngx_conf_init_value(ctx->dump, 0);
+  ngx_conf_merge_msec_value(ctx->dump_period, ctx->dump_period,
+                            NGX_HTTP_STREAM_SERVER_TRAFFIC_STATUS_DEFAULT_DUMP_PERIOD *
+                                1000);
     return NGX_CONF_OK;
 }
 

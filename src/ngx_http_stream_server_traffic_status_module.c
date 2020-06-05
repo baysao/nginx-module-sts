@@ -10,7 +10,7 @@
 #include "ngx_http_stream_server_traffic_status_display.h"
 #include "ngx_http_stream_server_traffic_status_dump.h"
 
-
+/* static ngx_int_t ngx_http_stream_server_traffic_status_handler(ngx_http_request_t *r); */
 static char *ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf,
     ngx_command_t *cmd, void *conf);
 static char *ngx_http_stream_server_traffic_status_dump(ngx_conf_t *cf,
@@ -340,6 +340,51 @@ ngx_http_stream_server_traffic_status_merge_loc_conf(ngx_conf_t *cf, void *paren
     return NGX_CONF_OK;
 }
 
+/* static ngx_int_t ngx_http_stream_server_traffic_status_handler(ngx_http_request_t *r) { */
+/*   ngx_int_t rc; */
+/*   ngx_http_stream_server_traffic_status_ctx_t *ctx; */
+/*   ngx_http_stream_server_traffic_status_loc_conf_t *stscf; */
+
+/*   ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "http sts handler"); */
+
+/*   ctx = ngx_http_get_module_main_conf(r, ngx_http_stream_server_traffic_status_module); */
+/*   stscf = ngx_http_get_module_loc_conf(r, ngx_http_stream_server_traffic_status_module); */
+
+/*   if (!ctx->enable || !stscf->enable || stscf->bypass_stats) { */
+/*     return NGX_DECLINED; */
+/*   } */
+/*   if (stscf->shm_zone == NULL) { */
+/*     return NGX_DECLINED; */
+/*   } */
+
+/*   rc = ngx_http_stream_server_traffic_status_shm_add_server(r); */
+/*   if (rc != NGX_OK) { */
+/*     ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, */
+/*                   "handler::shm_add_server() failed"); */
+/*   } */
+
+/*   rc = ngx_http_stream_server_traffic_status_shm_add_upstream(r); */
+/*   if (rc != NGX_OK) { */
+/*     ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, */
+/*                   "handler::shm_add_upstream() failed"); */
+/*   } */
+
+/*   rc = ngx_http_stream_server_traffic_status_shm_add_filter(r); */
+/*   if (rc != NGX_OK) { */
+/*     ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, */
+/*                   "handler::shm_add_filter() failed"); */
+/*   } */
+
+/* #if (NGX_HTTP_CACHE) */
+/*   rc = ngx_http_stream_server_traffic_status_shm_add_cache(r); */
+/*   if (rc != NGX_OK) { */
+/*     ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, */
+/*                   "handler::shm_add_cache() failed"); */
+/*   } */
+/* #endif */
+
+/*   return NGX_DECLINED; */
+/* } */
 
 ngx_msec_t
 ngx_http_stream_server_traffic_status_current_msec(void)
@@ -360,21 +405,21 @@ static ngx_int_t ngx_http_stream_server_traffic_status_init_worker(ngx_cycle_t *
   ngx_event_t *dump_event;
   ngx_http_stream_server_traffic_status_ctx_t *ctx;
 
-  ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0, "http vts init worker");
+  ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0, "http sts init worker");
 
   ctx = ngx_http_cycle_get_module_main_conf(
       cycle, ngx_http_stream_server_traffic_status_module);
 
   if (ctx == NULL) {
     ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0,
-                   "vts::init_worker(): is bypassed due to no http block in "
+                   "sts::init_worker(): is bypassed due to no http block in "
                    "configure file");
     return NGX_OK;
   }
 
   if (!(ctx->enable & ctx->dump) || ctx->rbtree == NULL) {
     ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0,
-                   "vts::init_worker(): is bypassed");
+                   "sts::init_worker(): is bypassed");
     return NGX_OK;
   }
 
@@ -395,21 +440,21 @@ static void ngx_http_stream_server_traffic_status_exit_worker(ngx_cycle_t *cycle
   ngx_event_t *dump_event;
   ngx_http_stream_server_traffic_status_ctx_t *ctx;
 
-  ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0, "http vts exit worker");
+  ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0, "http sts exit worker");
 
   ctx = ngx_http_cycle_get_module_main_conf(
       cycle, ngx_http_stream_server_traffic_status_module);
 
   if (ctx == NULL) {
     ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0,
-                   "vts::exit_worker(): is bypassed due to no http block in "
+                   "sts::exit_worker(): is bypassed due to no http block in "
                    "configure file");
     return;
   }
 
   if (!(ctx->enable & ctx->dump) || ctx->rbtree == NULL) {
     ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0,
-                   "vts::exit_worker(): is bypassed");
+                   "sts::exit_worker(): is bypassed");
     return;
   }
 

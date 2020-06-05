@@ -364,7 +364,7 @@ ngx_http_stream_server_traffic_status_current_msec(void)
 static ngx_int_t ngx_http_stream_server_traffic_status_init_worker(ngx_cycle_t *cycle) {
   ngx_event_t *dump_event;
   ngx_http_stream_server_traffic_status_ctx_t *ctx;
-  ngx_log_error(NGX_LOG_INFO, cycle->log, 0, "http sts init worker");
+  ngx_log_error(NGX_LOG_INFO, cycle->log, 0, "http sts init1 worker");
   ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0, "http sts init worker");
 
   ctx = ngx_http_cycle_get_module_main_conf(
@@ -400,7 +400,7 @@ static void ngx_http_stream_server_traffic_status_exit_worker(ngx_cycle_t *cycle
   ngx_event_t *dump_event;
   ngx_http_stream_server_traffic_status_ctx_t *ctx;
 
-  ngx_log_error(NGX_LOG_INFO, cycle->log, 0, "http sts exit worker");
+  ngx_log_error(NGX_LOG_INFO, cycle->log, 0, "http sts exit1 worker");
   ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0, "http sts exit worker");
 
   ctx = ngx_http_cycle_get_module_main_conf(

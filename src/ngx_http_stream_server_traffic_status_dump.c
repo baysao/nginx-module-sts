@@ -331,7 +331,8 @@ ngx_http_stream_server_traffic_status_dump_restore(ngx_event_t *ev)
 
     fd = ngx_open_file(ctx->dump_file.data, NGX_FILE_RDONLY, NGX_FILE_OPEN, 0);
     if (fd == NGX_INVALID_FILE) {
-        ngx_log_debug1(NGX_LOG_DEBUG_HTTP, ev->log, ngx_errno,
+      //        ngx_log_debug1(NGX_LOG_DEBUG_HTTP, ev->log, ngx_errno,
+        ngx_log_error(NGX_LOG_INFO, ev->log, ngx_errno,
                        ngx_open_file_n " \"%s\" failed", ctx->dump_file.data);
         return;
     }
@@ -343,7 +344,8 @@ ngx_http_stream_server_traffic_status_dump_restore(ngx_event_t *ev)
     n = ngx_http_stream_server_traffic_status_dump_header_read(&file, &file_header);
 
     if (n != sizeof(ngx_http_stream_server_traffic_status_dump_header_t)) {
-        ngx_log_debug1(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+      //        ngx_log_debug1(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+        ngx_log_error(NGX_LOG_INFO, ev->log, 0,
                       "dump_restore::dump_header_read() size:%z failed", n);
         ngx_http_stream_server_traffic_status_file_close(&file);
         return;
@@ -354,7 +356,8 @@ ngx_http_stream_server_traffic_status_dump_restore(ngx_event_t *ev)
           : ctx->shm_name.len;
 
     if (ngx_strncmp(ctx->shm_name.data, file_header.name, len) != 0) {
-        ngx_log_debug2(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+      //        ngx_log_debug2(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+        ngx_log_error(NGX_LOG_INFO, ev->log, 0,
                       "dump_restore::dump_header_read() name[%z]:\"%s\" failed",
                       len, file_header.name);
         ngx_http_stream_server_traffic_status_file_close(&file);
@@ -364,7 +367,8 @@ ngx_http_stream_server_traffic_status_dump_restore(ngx_event_t *ev)
     buf = ngx_pcalloc(ngx_cycle->pool, NGX_HTTP_STREAM_SERVER_TRAFFIC_STATUS_DUMP_DATA_BUF_SIZE);
     pad = ngx_pcalloc(ngx_cycle->pool, sizeof(NGX_HTTP_STREAM_SERVER_TRAFFIC_STATUS_DUMP_DATA_PAD));
     if (buf == NULL || pad == NULL) {
-        ngx_log_error(NGX_LOG_ALERT, ev->log, 0,
+      //ngx_log_error(NGX_LOG_ALERT, ev->log, 0,
+        ngx_log_error(NGX_LOG_INFO, ev->log, 0,
                       "dump_restore::ngx_pcalloc() failed");
         ngx_http_stream_server_traffic_status_file_close(&file);
         return;
@@ -381,7 +385,8 @@ ngx_http_stream_server_traffic_status_dump_restore(ngx_event_t *ev)
 
         if (n == NGX_ERROR || n == 0
             || n != sizeof(ngx_http_stream_server_traffic_status_node_t)) {
-            ngx_log_debug1(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+	  //ngx_log_debug1(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+            ngx_log_error(NGX_LOG_INFO, ev->log, 0,
                           "dump_restore::ngx_read_file() node size:%z failed", n);
             break;
         }
@@ -395,7 +400,8 @@ ngx_http_stream_server_traffic_status_dump_restore(ngx_event_t *ev)
         offset += n;
         n = ngx_read_file(&file, buf, vtsn.len, offset);
         if (n != vtsn.len) {
-            ngx_log_debug2(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+	  //ngx_log_debug2(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+            ngx_log_error(NGX_LOG_INFO, ev->log, 0,
                           "dump_restore::ngx_read_file() read:%z, data:%z failed",
                           n, vtsn.len);
             break;
@@ -409,13 +415,15 @@ ngx_http_stream_server_traffic_status_dump_restore(ngx_event_t *ev)
         if (n == NGX_ERROR || n == 0
             || n != sizeof(NGX_HTTP_STREAM_SERVER_TRAFFIC_STATUS_DUMP_DATA_PAD))
         {
-            ngx_log_debug1(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+	  //ngx_log_debug1(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+            ngx_log_error(NGX_LOG_INFO, ev->log, 0,
                           "dump_restore::ngx_read_file() pad size:%z failed", n);
             break;
         }
 
         if (ngx_memcmp(NGX_HTTP_STREAM_SERVER_TRAFFIC_STATUS_DUMP_DATA_PAD, pad, n) != 0) {
-            ngx_log_debug0(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+	  //ngx_log_debug0(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+            ngx_log_error(NGX_LOG_INFO, ev->log, 0,
                            "dump_restore::ngx_read_file() pad does not match");
             break;
         }
@@ -426,7 +434,8 @@ ngx_http_stream_server_traffic_status_dump_restore(ngx_event_t *ev)
 
         rc = ngx_http_stream_server_traffic_status_dump_restore_add_node(ev, &vtsn, &key);
         if (rc != NGX_OK) {
-            ngx_log_debug0(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+	  //ngx_log_debug0(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+            ngx_log_error(NGX_LOG_INFO, ev->log, 0,
                            "dump_restore::dump_restore_add_node() failed");
             break;
         }

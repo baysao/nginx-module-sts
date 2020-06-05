@@ -146,7 +146,8 @@ static char *ngx_http_stream_server_traffic_status_dump(ngx_conf_t *cf,
   ctx->dump = 1;
 
   ctx->dump_file = value[1];
-
+      ngx_conf_log_error(NGX_LOG_INFO, cf, 0, "dump_file: \"%s\"",
+                         &value[1]);
   /* second argument process */
   if (cf->args->nelts == 3) {
     rc = ngx_parse_time(&value[2], 0);

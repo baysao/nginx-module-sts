@@ -65,7 +65,7 @@ ngx_http_stream_server_traffic_status_dump_header_read(ngx_file_t *file,
     ngx_http_stream_server_traffic_status_dump_header_t *file_header)
 {
     ssize_t  n;
-
+    ngx_log_error(NGX_LOG_INFO, cycle->log, 0, "http sts status dump_header_read");
     ngx_memzero(file_header, sizeof(ngx_http_stream_server_traffic_status_dump_header_t));
 
     n = ngx_read_file(file, (u_char *) file_header,
@@ -83,7 +83,7 @@ ngx_http_stream_server_traffic_status_dump_header_write(ngx_event_t *ev, ngx_fil
     u_char                                       *p;
     ngx_http_stream_server_traffic_status_ctx_t          *ctx;
     ngx_http_stream_server_traffic_status_dump_header_t   file_header;
-
+    ngx_log_error(NGX_LOG_INFO, cycle->log, 0, "http sts status dump_header_write");
     ctx = ev->data;
 
     ngx_memzero(&file_header, sizeof(ngx_http_stream_server_traffic_status_dump_header_t));
@@ -109,7 +109,7 @@ ngx_http_stream_server_traffic_status_dump_node_write(ngx_event_t *ev, ngx_file_
 {
     ngx_http_stream_server_traffic_status_ctx_t   *ctx;
     ngx_http_stream_server_traffic_status_node_t  *vtsn;
-
+    ngx_log_error(NGX_LOG_INFO, cycle->log, 0, "http sts status dump_node_write");
     ctx = ev->data;
 
     if (node != ctx->rbtree->sentinel) {
@@ -137,7 +137,7 @@ ngx_http_stream_server_traffic_status_dump_update_valid(ngx_event_t *ev)
     ngx_file_t                                    file;
     ngx_http_stream_server_traffic_status_ctx_t          *ctx;
     ngx_http_stream_server_traffic_status_dump_header_t   file_header;
-
+    ngx_log_error(NGX_LOG_INFO, cycle->log, 0, "http sts status dump_valid");
     ctx = ev->data;
 
     fd = ngx_open_file(ctx->dump_file.data, NGX_FILE_RDONLY, NGX_FILE_OPEN, 0);
@@ -188,7 +188,7 @@ ngx_http_stream_server_traffic_status_dump_execute(ngx_event_t *ev)
     ngx_fd_t                              fd;
     ngx_file_t                            file;
     ngx_http_stream_server_traffic_status_ctx_t  *ctx;
-
+    ngx_log_error(NGX_LOG_INFO, cycle->log, 0, "http sts status dump_execute");
     ctx = ev->data;
 
     name = ctx->dump_file.data;
@@ -231,7 +231,7 @@ void
 ngx_http_stream_server_traffic_status_dump_handler(ngx_event_t *ev)
 {
     ngx_int_t  rc;
-
+    ngx_log_error(NGX_LOG_INFO, cycle->log, 0, "http sts status dump_handler");
     if (ngx_exiting) {
         return;
     }
@@ -263,7 +263,7 @@ ngx_http_stream_server_traffic_status_dump_restore_add_node(ngx_event_t *ev,
     ngx_rbtree_node_t                     *node;
     ngx_http_stream_server_traffic_status_ctx_t   *ctx;
     ngx_http_stream_server_traffic_status_node_t  *vtsn;
-
+    ngx_log_error(NGX_LOG_INFO, cycle->log, 0, "http sts status dump_restore_add_node");
     ctx = ev->data;
 
     if (key->len == 0) {
@@ -325,7 +325,7 @@ ngx_http_stream_server_traffic_status_dump_restore(ngx_event_t *ev)
     ngx_http_stream_server_traffic_status_ctx_t          *ctx;
     ngx_http_stream_server_traffic_status_node_t          vtsn;
     ngx_http_stream_server_traffic_status_dump_header_t   file_header;
-
+    ngx_log_error(NGX_LOG_INFO, cycle->log, 0, "http sts status dump_restore");
     ctx = ev->data;
 
     fd = ngx_open_file(ctx->dump_file.data, NGX_FILE_RDONLY, NGX_FILE_OPEN, 0);

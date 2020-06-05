@@ -326,7 +326,7 @@ ngx_http_stream_server_traffic_status_dump_restore(ngx_event_t *ev)
     ngx_http_stream_server_traffic_status_ctx_t          *ctx;
     ngx_http_stream_server_traffic_status_node_t          vtsn;
     ngx_http_stream_server_traffic_status_dump_header_t   file_header;
-    ngx_log_error(NGX_LOG_INFO, ev->log, 0, "http sts status dump_restore");
+    ngx_log_error(NGX_LOG_INFO, ev->log, 0, "http sts status dump_restore:%s", ctx->dump_file);
     ctx = ev->data;
 
     fd = ngx_open_file(ctx->dump_file.data, NGX_FILE_RDONLY, NGX_FILE_OPEN, 0);
@@ -340,7 +340,6 @@ ngx_http_stream_server_traffic_status_dump_restore(ngx_event_t *ev)
     file.fd = fd;
     file.name = ctx->dump_file;
     file.log = ev->log;
-
     n = ngx_http_stream_server_traffic_status_dump_header_read(&file, &file_header);
 
     if (n != sizeof(ngx_http_stream_server_traffic_status_dump_header_t)) {

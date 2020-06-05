@@ -373,8 +373,7 @@ static ngx_int_t ngx_http_stream_server_traffic_status_init_worker(ngx_cycle_t *
   if (ctx == NULL) {
     //    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0,
     ngx_log_error(NGX_LOG_INFO, cycle->log, 0,
-                   "sts::init_worker(): is bypassed due to no http block in "
-                   "configure file");
+                   "sts::init_worker(): is bypassed due to no http block in configure file");
     return NGX_OK;
   }
 
@@ -411,8 +410,7 @@ static void ngx_http_stream_server_traffic_status_exit_worker(ngx_cycle_t *cycle
   if (ctx == NULL) {
     //    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cycle->log, 0,
 		   ngx_log_error(NGX_LOG_INFO, cycle->log, 0,
-                   "sts::exit_worker(): is bypassed due to no http block in "
-                   "configure file");
+                   "sts::exit_worker(): is bypassed due to no http block in configure file");
     return;
   }
 

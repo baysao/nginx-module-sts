@@ -232,24 +232,24 @@ ngx_http_stream_server_traffic_status_dump_handler(ngx_event_t *ev)
 {
     ngx_int_t  rc;
     ngx_log_error(NGX_LOG_INFO, ev->log, 0, "http sts status dump_handler");
-    /* if (ngx_exiting) { */
-    /*     return; */
-    /* } */
+    if (ngx_exiting) {
+        return;
+    }
 
-    /* rc = ngx_http_stream_server_traffic_status_dump_update_valid(ev); */
-    /* if (rc != NGX_OK) { */
-    /*     goto invalid; */
-    /* } */
+    rc = ngx_http_stream_server_traffic_status_dump_update_valid(ev);
+    if (rc != NGX_OK) {
+        goto invalid;
+    }
 
-    /* rc = ngx_http_stream_server_traffic_status_dump_execute(ev); */
-    /* if (rc != NGX_OK) { */
-    /*     ngx_log_error(NGX_LOG_ALERT, ev->log, 0, */
-    /*                   "dump_handler::dump_header_execute() failed"); */
-    /* } */
+    rc = ngx_http_stream_server_traffic_status_dump_execute(ev);
+    if (rc != NGX_OK) {
+        ngx_log_error(NGX_LOG_ALERT, ev->log, 0,
+                      "dump_handler::dump_header_execute() failed");
+    }
 
-/* invalid: */
+invalid:
 
-/*     ngx_add_timer(ev, 1000); */
+    ngx_add_timer(ev, 1000);
 }
 
 

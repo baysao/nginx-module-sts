@@ -201,7 +201,8 @@ ngx_http_stream_server_traffic_status_dump_execute(ngx_event_t *ev)
     fd = ngx_open_file(name, NGX_FILE_RDWR, NGX_FILE_TRUNCATE, NGX_FILE_DEFAULT_ACCESS);
 
     if (fd == NGX_INVALID_FILE) {
-        ngx_log_error(NGX_LOG_ALERT, ev->log, ngx_errno,
+      //        ngx_log_error(NGX_LOG_ALERT, ev->log, ngx_errno,
+        ngx_log_error(NGX_LOG_INFO, ev->log, ngx_errno,
                       ngx_open_file_n " \"%s\" failed", name);
         return NGX_ERROR;
     }
@@ -214,7 +215,8 @@ ngx_http_stream_server_traffic_status_dump_execute(ngx_event_t *ev)
 
     n = ngx_http_stream_server_traffic_status_dump_header_write(ev, &file);
     if (n != sizeof(ngx_http_stream_server_traffic_status_dump_header_t)) {
-        ngx_log_error(NGX_LOG_ALERT, ev->log, 0,
+      //        ngx_log_error(NGX_LOG_ALERT, ev->log, 0,
+        ngx_log_error(NGX_LOG_INFO, ev->log, 0,
                       "dump_execute::dump_header_write() failed");
 
         ngx_http_stream_server_traffic_status_file_unlock(&file);

@@ -329,6 +329,8 @@ static char *ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf,
     return NGX_CONF_ERROR;
   }
 
+  ngx_conf_log_error(NGX_LOG_INFO, cf, 0, "shm shared name\"%s\"", name);
+  ngx_conf_log_error(NGX_LOG_INFO, cf, 0, "shm shared size\"%V\"", size);
   shm_zone = ngx_shared_memory_add(cf, &name, size,
                                    &ngx_http_stream_server_traffic_status_module);
   if (shm_zone == NULL) {

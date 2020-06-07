@@ -142,7 +142,8 @@ ngx_http_stream_server_traffic_status_dump_update_valid(ngx_event_t *ev)
 
     fd = ngx_open_file(ctx->dump_file.data, NGX_FILE_RDONLY, NGX_FILE_OPEN, 0);
     if (fd == NGX_INVALID_FILE) {
-        ngx_log_debug1(NGX_LOG_DEBUG_HTTP, ev->log, ngx_errno,
+        ngx_log_error(NGX_LOG_INFO, ev->log, ngx_errno,
+		      //        ngx_log_debug1(NGX_LOG_DEBUG_HTTP, ev->log, ngx_errno,
                        ngx_open_file_n " \"%s\" failed", ctx->dump_file.data);
         return NGX_OK;
     }

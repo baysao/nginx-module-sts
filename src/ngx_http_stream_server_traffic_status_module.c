@@ -298,7 +298,8 @@ static char *ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf,
 
       p = (u_char *)ngx_strchr(name.data, ':');
       if (p == NULL) {
-        ngx_conf_log_error(NGX_LOG_EMERG, cf, 0, "invalid shared size \"%V\"",
+	//        ngx_conf_log_error(NGX_LOG_EMERG, cf, 0, "invalid shared size \"%V\"",
+        ngx_conf_log_error(NGX_LOG_INFO, cf, 0, "invalid shared size \"%V\"",
                            &value[i]);
         return NGX_CONF_ERROR;
       }
@@ -310,13 +311,15 @@ static char *ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf,
 
       size = ngx_parse_size(&s);
       if (size == NGX_ERROR) {
-        ngx_conf_log_error(NGX_LOG_EMERG, cf, 0, "invalid shared size \"%V\"",
+	//        ngx_conf_log_error(NGX_LOG_EMERG, cf, 0, "invalid shared size \"%V\"",
+        ngx_conf_log_error(NGX_LOG_INFO, cf, 0, "invalid shared size \"%V\"",
                            &value[i]);
         return NGX_CONF_ERROR;
       }
 
       if (size < (ssize_t)(8 * ngx_pagesize)) {
-        ngx_conf_log_error(NGX_LOG_EMERG, cf, 0, "shared \"%V\" is too small",
+	//        ngx_conf_log_error(NGX_LOG_EMERG, cf, 0, "shared \"%V\" is too small",
+        ngx_conf_log_error(NGX_LOG_INFO, cf, 0, "shared \"%V\" is too small",
                            &value[i]);
         return NGX_CONF_ERROR;
       }
@@ -324,13 +327,12 @@ static char *ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf,
       continue;
     }
 
-    ngx_conf_log_error(NGX_LOG_EMERG, cf, 0, "invalid parameter \"%V\"",
+    ngx_conf_log_error(NGX_LOG_INFO, cf, 0, "invalid parameter \"%V\"",
+		       //    ngx_conf_log_error(NGX_LOG_EMERG, cf, 0, "invalid parameter \"%V\"",
                        &value[i]);
     return NGX_CONF_ERROR;
   }
 
-  ngx_conf_log_error(NGX_LOG_INFO, cf, 0, "shm shared name\"%s\"", name);
-  ngx_conf_log_error(NGX_LOG_INFO, cf, 0, "shm shared size\"%V\"", size);
   shm_zone = ngx_shared_memory_add(cf, &name, size,
                                    &ngx_http_stream_server_traffic_status_module);
   if (shm_zone == NULL) {

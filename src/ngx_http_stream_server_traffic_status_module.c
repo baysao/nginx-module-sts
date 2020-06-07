@@ -342,7 +342,8 @@ static char *ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf,
   if (shm_zone->data) {
     ctx = shm_zone->data;
 
-    ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+    //    ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+    ngx_conf_log_error(NGX_LOG_INFO, cf, 0,
                        "stream_server_traffic_status: \"%V\" is already bound to key",
                        &name);
 

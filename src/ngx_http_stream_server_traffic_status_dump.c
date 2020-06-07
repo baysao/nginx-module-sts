@@ -152,11 +152,12 @@ ngx_http_stream_server_traffic_status_dump_update_valid(ngx_event_t *ev)
     file.log = ev->log;
 
     n = ngx_http_stream_server_traffic_status_dump_header_read(&file, &file_header);
-
+    ngx_log_error(NGX_LOG_INFO, ev->log, 0, "http sts status dump_valid: size:%z",n);
     ngx_http_stream_server_traffic_status_file_close(&file);
 
     if (n != sizeof(ngx_http_stream_server_traffic_status_dump_header_t)) {
-        ngx_log_debug1(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+      //        ngx_log_debug1(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+        ngx_log_error(NGX_LOG_INFO, ev->log, 0,
                       "dump_update_valid::dump_header_read() size:%z failed", n);
         return NGX_OK;
     }
@@ -166,7 +167,8 @@ ngx_http_stream_server_traffic_status_dump_update_valid(ngx_event_t *ev)
           : ctx->shm_name.len;
 
     if (ngx_strncmp(ctx->shm_name.data, file_header.name, len) != 0) {
-        ngx_log_debug2(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+      //        ngx_log_debug2(NGX_LOG_DEBUG_HTTP, ev->log, 0,
+        ngx_log_error(NGX_LOG_INFO, ev->log, 0,
                       "dump_update_valid::dump_header_read() name[%z]:\"%s\" failed",
                       len, file_header.name);
         return NGX_OK;

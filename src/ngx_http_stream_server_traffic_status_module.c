@@ -608,7 +608,7 @@ static ngx_int_t ngx_http_stream_server_traffic_status_init_worker(ngx_cycle_t *
   /* ngx_add_timer(dump_event, 1000); */
 
   /* restore */
-  ngx_http_stream_server_traffic_status_dump_restore(dump_event);
+  //ngx_http_stream_server_traffic_status_dump_restore(dump_event);
 
   return NGX_OK;
 }

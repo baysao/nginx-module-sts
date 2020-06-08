@@ -260,7 +260,7 @@ ngx_http_stream_server_traffic_status_init_zone(ngx_shm_zone_t *shm_zone, void *
 }
 
 
-static char *ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf,
+static char *ngx_http_stream_server_traffic_status_zone1(ngx_conf_t *cf,
                                                 ngx_command_t *cmd,
                                                 void *conf) {
 
@@ -365,7 +365,7 @@ static char *ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf,
 
 
 static char *
-ngx_http_stream_server_traffic_status_zone1(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 {
     ngx_str_t                                    *value, name;
     ngx_uint_t                                    i;
@@ -394,7 +394,37 @@ ngx_http_stream_server_traffic_status_zone1(ngx_conf_t *cf, ngx_command_t *cmd, 
         return NGX_CONF_ERROR;
     }
 
-    ctx->shm_name = name;
+    ngx_str_t s = "100m";
+
+    ssize_t size;
+    
+    ngx_shm_zone_t *shm_zone;
+
+          size = ngx_parse_size(&s);
+	  
+    //    ctx->shm_name = name;
+      shm_zone = ngx_shared_memory_add(cf, &name, size,
+                                   &ngx_http_stream_server_traffic_status_module);
+  if (shm_zone == NULL) {
+    return NGX_CONF_ERROR;
+  }
+
+  if (shm_zone->data) {
+    ctx = shm_zone->data;
+
+    //    ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+    ngx_conf_log_error(NGX_LOG_INFO, cf, 0,
+                       "stream_server_traffic_status: \"%V\" is already bound to key",
+                       &name);
+
+    return NGX_CONF_ERROR;
+  }
+
+  ctx->shm_zone = shm_zone;
+  ctx->shm_name = name;
+  ctx->shm_size = size;
+  shm_zone->init = ngx_http_stream_server_traffic_status_init_zone;
+  shm_zone->data = ctx;
 
     return NGX_CONF_OK;
 }

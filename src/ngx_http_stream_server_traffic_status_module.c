@@ -260,7 +260,7 @@ ngx_http_stream_server_traffic_status_init_zone(ngx_shm_zone_t *shm_zone, void *
 }
 
 
-static char *ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf,
+static char *ngx_http_stream_server_traffic_status_zone1(ngx_conf_t *cf,
                                                 ngx_command_t *cmd,
                                                 void *conf) {
 
@@ -362,7 +362,7 @@ static char *ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf,
 
 
 static char *
-ngx_http_stream_server_traffic_status_zone1(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 {
     ngx_str_t                                    *value, name;
     ngx_uint_t                                    i;

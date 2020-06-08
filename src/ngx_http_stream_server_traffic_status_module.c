@@ -601,11 +601,11 @@ static ngx_int_t ngx_http_stream_server_traffic_status_init_worker(ngx_cycle_t *
   }
 
   /* dumper */
-  dump_event = &ctx->dump_event;
-  dump_event->handler = ngx_http_stream_server_traffic_status_dump_handler;
-  dump_event->log = ngx_cycle->log;
-  dump_event->data = ctx;
-  ngx_add_timer(dump_event, 1000);
+  /* dump_event = &ctx->dump_event; */
+  /* dump_event->handler = ngx_http_stream_server_traffic_status_dump_handler; */
+  /* dump_event->log = ngx_cycle->log; */
+  /* dump_event->data = ctx; */
+  /* ngx_add_timer(dump_event, 1000); */
 
   /* restore */
   ngx_http_stream_server_traffic_status_dump_restore(dump_event);

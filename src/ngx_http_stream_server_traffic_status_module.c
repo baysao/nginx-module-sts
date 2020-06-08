@@ -543,7 +543,19 @@ ngx_http_stream_server_traffic_status_merge_loc_conf(ngx_conf_t *cf, void *paren
     ngx_conf_merge_msec_value(conf->average_period, prev->average_period,
                               NGX_HTTP_STREAM_SERVER_TRAFFIC_STATUS_DEFAULT_AVG_PERIOD * 1000);
 
-    conf->shm_name = ctx->shm_name;
+    //    conf->shm_name = ctx->shm_name;
+  ngx_str_t name;
+  ngx_shm_zone_t *shm_zone;
+      name = ctx->shm_name;
+
+  shm_zone = ngx_shared_memory_add(cf, &name, 0,
+                                   &ngx_http_stream_server_traffic_status_module);
+  if (shm_zone == NULL) {
+    return NGX_CONF_ERROR;
+  }
+
+  conf->shm_zone = shm_zone;
+  conf->shm_name = name;
 
     return NGX_CONF_OK;
 }

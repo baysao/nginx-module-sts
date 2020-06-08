@@ -127,8 +127,8 @@ ngx_module_t ngx_http_stream_server_traffic_status_module = {
       //ngx_http_stream_server_traffic_status_init_worker, /* init process */
     NULL,                                                    /* init thread */
     NULL,                                                    /* exit thread */
-            NULL,                                                    /* exit process */
-	    //	ngx_http_stream_server_traffic_status_exit_worker, /* exit process */
+    NULL,                                                    /* exit process */
+    //ngx_http_stream_server_traffic_status_exit_worker, /* exit process */
     NULL,                                                    /* exit master */
     NGX_MODULE_V1_PADDING
 };
@@ -292,11 +292,11 @@ static char *ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf,
   size = NGX_HTTP_STREAM_SERVER_TRAFFIC_STATUS_DEFAULT_SHM_SIZE;
 
   for (i = 1; i < cf->args->nelts; i++) {
-        ngx_conf_log_error(NGX_LOG_INFO, cf, 0, "parameter \"%V\"",
-		       //    ngx_conf_log_error(NGX_LOG_EMERG, cf, 0, "invalid parameter \"%V\"",
+        ngx_conf_log_error(NGX_LOG_INFO, cf, 0, " parameter \"%V\"",
                        &value[i]);
     if (ngx_strncmp(value[i].data, "shared:", 7) == 0) {
 
+      
       name.data = value[i].data + 7;
 
       p = (u_char *)ngx_strchr(name.data, ':');
@@ -365,7 +365,7 @@ static char *ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf,
 
 
 static char *
-ngx_http_stream_server_traffic_status_zone2(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 {
     ngx_str_t                                    *value, name;
     ngx_uint_t                                    i;

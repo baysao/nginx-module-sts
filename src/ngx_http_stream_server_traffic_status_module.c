@@ -292,6 +292,8 @@ static char *ngx_http_stream_server_traffic_status_zone1(ngx_conf_t *cf,
   size = NGX_HTTP_STREAM_SERVER_TRAFFIC_STATUS_DEFAULT_SHM_SIZE;
 
   for (i = 1; i < cf->args->nelts; i++) {
+        ngx_conf_log_error(NGX_LOG_INFO, cf, 0, " parameter \"%V\"",
+                       &value[i]);
     if (ngx_strncmp(value[i].data, "shared:", 7) == 0) {
 
       
@@ -381,8 +383,6 @@ ngx_http_stream_server_traffic_status_zone(ngx_conf_t *cf, ngx_command_t *cmd, v
     ngx_str_set(&name, NGX_HTTP_STREAM_SERVER_TRAFFIC_STATUS_DEFAULT_SHM_NAME);
 
     for (i = 1; i < cf->args->nelts; i++) {
-              ngx_conf_log_error(NGX_LOG_INFO, cf, 0, " parameter \"%V\"",
-                       &value[i]);
         if (ngx_strncmp(value[i].data, "shared:", 7) == 0) {
             name.data = value[i].data + 7;
             name.len = value[i].len - 7;

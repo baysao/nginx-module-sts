@@ -209,7 +209,7 @@ ngx_http_stream_server_traffic_status_rbtree_insert_value(ngx_rbtree_node_t *tem
 
 
 static ngx_int_t
-ngx_http_stream_server_traffic_status_init_zone1(ngx_shm_zone_t *shm_zone, void *data) {
+ngx_http_stream_server_traffic_status_init_zone(ngx_shm_zone_t *shm_zone, void *data) {
   ngx_http_stream_server_traffic_status_ctx_t *octx = data;
 
   size_t len;
